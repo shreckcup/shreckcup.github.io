@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>shreckcup.github.io</title>
+<title>STAT2005 Project: Geometric Brownian Motion – shreckcup.github.io</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -77,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3e7735b7b22659e5fa437aca0bb49075.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-1de071e047e49cd083ceb1b25ae4a66d.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -106,6 +106,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -146,21 +175,53 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology">Methodology</a>
+  <ul class="collapse">
+  <li><a href="#geometric-brownian-motion" id="toc-geometric-brownian-motion" class="nav-link" data-scroll-target="#geometric-brownian-motion">Geometric Brownian Motion</a></li>
+  <li><a href="#monte-carlo-simulation-with-geometric-brownian-motion-and-ways-of-validation" id="toc-monte-carlo-simulation-with-geometric-brownian-motion-and-ways-of-validation" class="nav-link" data-scroll-target="#monte-carlo-simulation-with-geometric-brownian-motion-and-ways-of-validation">Monte Carlo Simulation with Geometric Brownian Motion and ways of validation</a></li>
+  <li><a href="#description-of-data" id="toc-description-of-data" class="nav-link" data-scroll-target="#description-of-data">Description of Data</a></li>
+  <li><a href="#justification-of-the-chosen-model" id="toc-justification-of-the-chosen-model" class="nav-link" data-scroll-target="#justification-of-the-chosen-model">Justification of the Chosen Model</a></li>
+  </ul></li>
+  <li><a href="#model-implementation-and-results" id="toc-model-implementation-and-results" class="nav-link" data-scroll-target="#model-implementation-and-results">Model Implementation and Results</a>
+  <ul class="collapse">
+  <li><a href="#data-editing" id="toc-data-editing" class="nav-link" data-scroll-target="#data-editing">Data Editing</a></li>
+  <li><a href="#basic-data-analysis" id="toc-basic-data-analysis" class="nav-link" data-scroll-target="#basic-data-analysis">Basic Data Analysis</a></li>
+  <li><a href="#model-implementation" id="toc-model-implementation" class="nav-link" data-scroll-target="#model-implementation">Model Implementation</a></li>
+  <li><a href="#monte-carlo-simulation-with-gbm" id="toc-monte-carlo-simulation-with-gbm" class="nav-link" data-scroll-target="#monte-carlo-simulation-with-gbm">Monte Carlo Simulation with GBM</a></li>
+  <li><a href="#validation-of-the-model" id="toc-validation-of-the-model" class="nav-link" data-scroll-target="#validation-of-the-model">Validation of the Model</a>
+  <ul class="collapse">
+  <li><a href="#value-at-risk-var" id="toc-value-at-risk-var" class="nav-link" data-scroll-target="#value-at-risk-var">Value-at-Risk (VaR)</a></li>
+  <li><a href="#historical-vs-simulated-data" id="toc-historical-vs-simulated-data" class="nav-link" data-scroll-target="#historical-vs-simulated-data">Historical vs Simulated data</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">shreckcup.github.io</h1>
+<h1 class="title">STAT2005 Project: Geometric Brownian Motion</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Lee Kuan 22209384, Disha Peshwani 22752121 </p>
+          </div>
+  </div>
     
   
     
@@ -171,16 +232,503 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This is a Quarto website.</p>
-<p>To learn more about Quarto websites visit <a href="https://quarto.org/docs/websites" class="uri">https://quarto.org/docs/websites</a>.</p>
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>Financial markets are inherently stochastic, with numerous interconnected factors influencing stock prices (Samuelson, 1965). Future prices and volatility are influenced by probability and are random. The uncertainties and risks are higher due to constant price fluctuations, which make financial forecasting in stock markets much more complex but also very important, as future forecasts help investors minimise their losses. Understanding how stock prices move helps improve decision-making and investment allocation by enabling stakeholders to take calculated risks through price forecasting.&nbsp;</p>
+<p>McDonald’s has a long history in the market, surviving the 2008 Global Financial Crisis and the inflationary pressures in 2020, and is a global leader in the fast-food industry, making it an ideal choice for financial modelling (Britannica, 2026). Modelling and extrapolating McDonald’s Corporation’s historical and future stock price movements can be done using the Geometric Brownian motion (GBM) model. Geometric Brownian Motion is a widely used financial modelling method that assumes stock prices follow a continuous random process with constant volatility and drift (Reddy &amp; Clinton, 2016).</p>
+<p>Attempting to predict future stock prices using a Monte Carlo simulation with GBM can help estimate future risk and inform more informed decisions about how future stock prices will move (Reddy &amp; Clinton, 2016). With this methodology in place, a prediction of McDonald’s future stock prices can be made, along with an estimate of risk, by using the high variability in McDonald’s past stock prices and a stochastic simulation to quantify the risk an investor can take in the future.</p>
+</section>
+<section id="methodology" class="level1">
+<h1>Methodology</h1>
+<section id="geometric-brownian-motion" class="level2">
+<h2 class="anchored" data-anchor-id="geometric-brownian-motion">Geometric Brownian Motion</h2>
+<p>When creating the geometric Brownian motion (GBM) model for McDonald’s historical stock data, changes were needed to the proposed methodology because it differs from the recommended GBM modelling approaches. The proposed methodology used the difference between the day’s high and low prices as the volatility. Volatility in historical stock data is typically the standard deviation (Adkins, 2026). As well as that, using log returns instead of simple returns to calculate the drift (expected return) (Ross, 2014).</p>
+<p>The revised methodology for the GBM model is as follows. Using a closed-form solution to the stochastic differential equation as:</p>
+<p><span class="math display">\[
+S_t = S_0 \exp((\mu - \frac{\sigma^2}{2})t + \sigma W_t
+\]</span></p>
+<p>Where:<br>
+<span class="math inline">\(S_0\)</span>: initial price,<br>
+<span class="math inline">\(\mu\)</span>: drift or expected return,<br>
+<span class="math inline">\(\sigma\)</span>: volatility or standard deviation,<br>
+<span class="math inline">\(W_t\)</span>: the standard Weiner process,<br>
+<span class="math inline">\(t\)</span>: time steps of the time set <span class="math inline">\(T\)</span></p>
+<p>There are many ways to calculate returns, including the simple and the continuously compounded (logarithmic) methods. To calculate log returns for each closing value of each specific trading date, a formula is used.</p>
+<p><span class="math display">\[
+\text{Log Returns} = \ln(\frac{V_{t+1}}{V_t})
+\]</span></p>
+<p>Where:<br>
+<span class="math inline">\(V\)</span>: value of closing price,<br>
+<span class="math inline">\(t\)</span>: specific trading date.</p>
+<p>(Panna, 2017)</p>
+<p>The log returns of the closing price are normally distributed, and both the drift and volatility can be calculated from them.</p>
+<p><span class="math display">\[
+\ln(\frac{V_t}{V_0})\sim N((\mu-\frac{\sigma^2}{2})t, \sigma^2t)
+\]</span></p>
+<p>(Wiwatanapataphee, 2026)</p>
+<p>The remaining variables needed for the closed-form solution for GBM can be obtained from the dataset. The initial price when predicting future stock prices can be taken as the very last historical closing price, so it can be used to directly continue after the historical prices. After defining all the variables, a completed model can be run against it.</p>
+</section>
+<section id="monte-carlo-simulation-with-geometric-brownian-motion-and-ways-of-validation" class="level2">
+<h2 class="anchored" data-anchor-id="monte-carlo-simulation-with-geometric-brownian-motion-and-ways-of-validation">Monte Carlo Simulation with Geometric Brownian Motion and ways of validation</h2>
+<p>Monte Carlo simulation is a method that uses stochastic variables rather than fixed ones (Bonate, 2001). It produces multiple trials of a process that can be analysed using value-at-risk (VaR) models. Now that a fully defined geometric Brownian motion model exists, it can serve as the basis for a Monte Carlo simulation. Repeatedly simulating the GBM model with the Wiener process acting as the stochastic variable, then storing it for plotting and analysis. The Monte Carlo trials will produce a distribution of hypothetical future stock prices. The Monte Carlo simulation assumes a perfect, efficient market in which stock price movements follow a statistical distribution based on historical data, but in real life, market crashes are unpredictable (Cheung &amp; Powell, 2013). Generating 10,000 independent simulations ensures that the resulting data is large and reliable.</p>
+<p>The value-at-risk (VaR) at the 95% confidence level will be calculated, representing the maximum expected loss under normal market conditions (McNeil et al., 2015).</p>
+<p>To find VaR, the 10,000 simulated price paths can be plotted and arranged in ascending order. The mathematical quantile function is then applied to the sorted simulated prices to compute the Monte Carlo VaR at the 95% confidence level. The fifth percentile tail boundary is isolated to find VaR<span class="math inline">\(_{0.95}\)</span> (Glasserman et al., 2000). Out of the 10,000 distributions, the formula identifies the 500th path with the worst performance as the maximum possible loss for an investor under normal market conditions. In RStudio, the discrete value at the 95th percentile of the simulated losses is obtained using the quantile function (Alexander, 2008).&nbsp;&nbsp;</p>
+<p>Another way to validate a model is to compare historical and simulated data. This provides a direct comparison to assess whether the model can accurately mimic stock movements. This validation has limitations, as it does not account for real-world effects on stocks, such as inflation, market crashes, and war.</p>
+</section>
+<section id="description-of-data" class="level2">
+<h2 class="anchored" data-anchor-id="description-of-data">Description of Data</h2>
+<p>The chosen data is from a constantly updated database. It is the historical stock price of McDonald’s for the past 26 years, from 2000 to 2026.</p>
+<p>The set of data includes columns of:</p>
+<ul>
+<li><p>Date: the specific trading day (MM/DD/YYYY),</p></li>
+<li><p>Close: the closing price of the stock,</p></li>
+<li><p>High: the highest price the stock reached during the trading day,</p></li>
+<li><p>Low: the lowest price that stock dropped to during the trading day,</p></li>
+<li><p>Open: the opening (initial) price of the stock of the trading day, and</p></li>
+<li><p>Volume: the volume of the shares traded during the day.</p></li>
+</ul>
+<p>The closing data will be the column most utilised in the methodology, as most stock analyses use the closing price because it is considered the most accurate value on the specific trading day (Hayes, 2023).</p>
+<p>Since the beginning of the monitored stock prices in 2000, the closing price has steadily risen from the initial price of USD$21.04. When graphing the closing prices of McDonald’s stock against the dates, some obvious dips are visible in the figure below (Figure 1.1).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> MCD_DB<span class="sc">$</span>Date, <span class="at">y =</span> MCD_DB<span class="sc">$</span>Close, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"blue4"</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Date"</span>, <span class="at">ylab =</span> <span class="st">"Closing price ($)"</span>, <span class="at">main =</span> <span class="st">"Closing Price ($) of McDonald's Stock from 2000 to 2026"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>The closing price of McDonald’s stock from 2000 to 2026.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>A significant dip in the closing price is evident around 2020. This can be attributed to the global pandemic, when the panic at the start of COVID-19 prompted many investors to sell their stocks simultaneously, triggering a market crash (Chau, 2021). These external effects can heavily skew the performance of real-world stocks and lead to extremely high volatility. Fortunately, GBM introduces randomness by adding the standard Wiener process. This is a continuous-time, continuous-state stochastic process added to the GBM equation.</p>
+</section>
+<section id="justification-of-the-chosen-model" class="level2">
+<h2 class="anchored" data-anchor-id="justification-of-the-chosen-model">Justification of the Chosen Model</h2>
+<p>To accurately forecast stock prices, there are different simulation techniques. This report is based on Geometric Brownian Motion to simulate future price paths for McDonald’s Corporation stock.</p>
+<p>In traditional time series models, the future price simulation is based on the past observations, and is perfect for a short-term linear trend, as it predicts a single deterministic path but it smooths out the market volatility. On the other hand, GBM works by splitting the asset price paths into a deterministic drift and adding randomness by a Wiener process.</p>
+<p>Even though GBM is a stochastic simulation tool, it is still heavily based on the historical data. Just as with time-series modelling, GBM is based on parameters estimated from historical data. The <span class="math inline">\(S_0\)</span>: initial price, <span class="math inline">\(\mu\)</span>: drift (expected return), and <span class="math inline">\(\sigma\)</span>: volatility (standard deviation) are all estimated from the past financial data (Reddy &amp; Clinton, 2016).</p>
+<p>The simulation is created by feeding this real-world data into the mathematical formula, and the model is then used to generate 10,000 future paths (Sinha 2024). The solution is not merely random noise but backed up by McDonald’s historical data. The solution offers multiple options to investors instead of a single guess, which could be wrong in the face of a market shock. This model also allows value-at-risk to be calculated, which represents the worst possible outcomes for the investor, whereas the time-series model provides only one best guess, which might not hold true (Wipplinger, 2007).</p>
+</section>
+</section>
+<section id="model-implementation-and-results" class="level1">
+<h1>Model Implementation and Results</h1>
+<section id="data-editing" class="level2">
+<h2 class="anchored" data-anchor-id="data-editing">Data Editing</h2>
+<p>The raw data set was imported from Kaggle in the .csv file type from https://www.kaggle.com/datasets/hassanjameelahmed/mcdonalds-mcd-historical-stock-data-analysis</p>
+<p>The data needs to be edited to be able to be applied to the model.</p>
+<p>When starting the implementation of the methodology, edits had to be made to the data to ensure that it could be applied and utilised in the methodology. Since the coding language, R, requires a specific formatting to be able to recognise the data type “date,” the <em>Date</em> column format needs to be adapted for R. Unfortunately, after extensive research, the change to the original format was not able to be done in R. It has been edited in Excel to ensure it is in the format YYYY-MM-DD.`</p>
+<div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<pre><code>        Date    Close     High      Low     Open  Volume
+1 2000-01-03 21.04138 21.27370 20.67631 21.20733 4520600
+2 2000-01-04 20.60993 21.00819 20.37761 20.87543 4216500
+3 2000-01-05 20.94181 21.43963 20.60993 20.60993 5231600
+4 2000-01-06 20.64312 20.90862 20.54355 20.77587 4809400
+5 2000-01-07 21.17413 21.24050 20.64311 20.70949 5124700
+6 2000-01-10 21.27369 21.77152 21.10775 21.24051 4113900</code></pre>
 </div>
 </div>
+<p>When imported, the data type for the <em>Date</em> column is a string, it had to be transformed into the “date” data type. This can be done using the function <strong><em>as_date</em></strong> from the package “lubridate.”</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">#using the lubridate function as_date to ensure that the imported string of date, is the correct data type "date"</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>MCD_DB<span class="sc">$</span>Date <span class="ot">&lt;-</span> lubridate<span class="sc">::</span><span class="fu">as_date</span>(MCD_DB<span class="sc">$</span>Date)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(MCD_DB)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        Date    Close     High      Low     Open  Volume
+1 2000-01-03 21.04138 21.27370 20.67631 21.20733 4520600
+2 2000-01-04 20.60993 21.00819 20.37761 20.87543 4216500
+3 2000-01-05 20.94181 21.43963 20.60993 20.60993 5231600
+4 2000-01-06 20.64312 20.90862 20.54355 20.77587 4809400
+5 2000-01-07 21.17413 21.24050 20.64311 20.70949 5124700
+6 2000-01-10 21.27369 21.77152 21.10775 21.24051 4113900</code></pre>
+</div>
+</div>
+<p>After ensuring the data types had been changed correctly, the <em>Date</em> and <em>Close</em> columns had to be separated from the rest of the data, as the rest of the columns are not needed for this model.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co">#creating a data table of just the Date and the Closing columns to eliminate all unneeded columns.</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>MCD_closing <span class="ot">&lt;-</span> MCD_DB[<span class="fu">c</span>(<span class="st">"Date"</span>, <span class="st">"Close"</span>)]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(MCD_closing)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        Date    Close
+1 2000-01-03 21.04138
+2 2000-01-04 20.60993
+3 2000-01-05 20.94181
+4 2000-01-06 20.64312
+5 2000-01-07 21.17413
+6 2000-01-10 21.27369</code></pre>
+</div>
+</div>
+<p>The needed columns are now separated into a separate variable named: <em>MCD_closing</em>. With both of the columns being correct data type, a basic data analysis can be performed.</p>
+</section>
+<section id="basic-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="basic-data-analysis">Basic Data Analysis</h2>
+<p>A plot can be created using <em>MCD_closing</em> to view how the raw historical closing price has changed over the 26 years.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> MCD_closing<span class="sc">$</span>Date, <span class="at">y =</span> MCD_closing<span class="sc">$</span>Close, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"blue4"</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Date"</span>, <span class="at">ylab =</span> <span class="st">"Closing price ($)"</span>, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Closing Price ($) of McDonald's Stock from 2000 to 2026"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Graph of all closing prices of McDonald’s stock from 2000 to 2006</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This is the same graph as Figure 1.1 that was shown in the Methodology. The closing price increases from USD$21.04139 to USD$315.00 over 26 years and 6,559 open trading days.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>This means that there's a daily average increase in price of: USD$ 0.0448176 </code></pre>
+</div>
+</div>
+<p>There are multiple points of unexpected movement, and fluctuations that are expected of stock movement. When magnified and focused on each decade, the most extreme dips in the closing price looks more regular than when all 26 years are shown at once.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>), <span class="at">mar =</span> (<span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">1</span>, <span class="dv">1</span>)))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> MCD_DB<span class="sc">$</span>Date, <span class="at">y =</span> MCD_DB<span class="sc">$</span>Close, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"blue4"</span>,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">as_date</span>(<span class="fu">c</span>(<span class="st">"2000-01-03"</span>,<span class="st">"2009-12-31"</span>)), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">50</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Date"</span>, <span class="at">ylab =</span> <span class="st">"Closing price ($)"</span>)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> MCD_DB<span class="sc">$</span>Date, <span class="at">y =</span> MCD_DB<span class="sc">$</span>Close, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"blue4"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">as_date</span>(<span class="fu">c</span>(<span class="st">"2010-01-04"</span>,<span class="st">"2020-12-31"</span>)), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">30</span>,<span class="dv">225</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Date"</span>, <span class="at">ylab =</span> <span class="st">"Closing price ($)"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> MCD_DB<span class="sc">$</span>Date, <span class="at">y =</span> MCD_DB<span class="sc">$</span>Close, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"blue4"</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlim =</span> <span class="fu">as_date</span>(<span class="fu">c</span>(<span class="st">"2020-12-31"</span>,<span class="st">"2026-01-30"</span>)), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">150</span>,<span class="dv">350</span>),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Date"</span>, <span class="at">ylab =</span> <span class="st">"Closing price ($)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Each decade of available closing prices from 2000 to 2026</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Each separate plot looks relatively even and regular, even with the large difference between the initial price and the ending price.</p>
+<p>A 5 number summary can be performed as an extremely basic data analysis.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(MCD_closing)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Date                Close        
+ Min.   :2000-01-03   Min.   :  6.766  
+ 1st Qu.:2006-07-12   1st Qu.: 20.727  
+ Median :2013-01-16   Median : 68.245  
+ Mean   :2013-01-15   Mean   :100.093  
+ 3rd Qu.:2019-07-23   3rd Qu.:164.342  
+ Max.   :2026-01-30   Max.   :319.650  </code></pre>
+</div>
+</div>
+</section>
+<section id="model-implementation" class="level2">
+<h2 class="anchored" data-anchor-id="model-implementation">Model Implementation</h2>
+<p>To start with creating a GBM model, the log returns of the closing prices must be calculated and put into a new data frame.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co">#make a data frame just for daily returns</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>MCD_daily_logreturns <span class="ot">&lt;-</span> PerformanceAnalytics<span class="sc">::</span><span class="fu">Return.calculate</span>(MCD_closing, </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                                                               <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"log"</span>))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(MCD_daily_logreturns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  Close
+2000-01-03           NA
+2000-01-04 -0.020718245
+2000-01-05  0.015974669
+2000-01-06 -0.014365679
+2000-01-07  0.025398141
+2000-01-10  0.004691293</code></pre>
+</div>
+</div>
+<p>This table shows the first 6 rows of the newly created <em>MCD_daily_logreturns</em> data frame.</p>
+<p>The function: <strong><em>Return.calculate</em></strong> is used from the “PerformanceAnalytics<em>”</em> package. This is a function that will create the returns for all the closing prices in a data frame and output the results into a new data frame. The method is chosen as”<strong>log</strong>” as log returns are needed for GBM.</p>
+<p>As seen in the previous table, there is an <em>NA</em> value. This happens because log returns are based on the current and previous closing price. Since the first closing price has no previous price to calculate log returns with, it returns a NA value, or missing data. So, the first column needs to be removed so it can be easily handled.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co">#omitting the NA value that was created from</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#calculating log returns</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>MCD_daily_logreturns <span class="ot">&lt;-</span> <span class="fu">na.omit</span>(MCD_daily_logreturns)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(MCD_daily_logreturns)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  Close
+2000-01-04 -0.020718245
+2000-01-05  0.015974669
+2000-01-06 -0.014365679
+2000-01-07  0.025398141
+2000-01-10  0.004691293
+2000-01-11  0.023130864</code></pre>
+</div>
+</div>
+<p>This table shows the updated <em>MCD_daily_logreturns</em> data frame with no NA values.</p>
+<p>Now with log returns being calculated, it can be demonstrated that it is normally distributed.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(MCD_daily_logreturns<span class="sc">$</span>Close, <span class="at">breaks =</span> <span class="dv">100</span>, <span class="at">col =</span><span class="st">"cadetblue1"</span>,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Closing Log Returns"</span>,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Frequency of Log Returns"</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co">#Adding a line for the mean to view the normality of the graph</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">mean</span>(MCD_daily_logreturns<span class="sc">$</span>Close), <span class="at">col =</span> <span class="st">"red"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>Histogram of the closing log returns</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The histogram does look mostly normal, but slightly skewed with the smaller number of breaks. If the number of breaks increases, it looks a like a regular normal probability distribution. With the red line representing the mean, it makes it easier to view the normality of the graph.</p>
+<p>Now that the log returns have been calculated, the drift and the volatility can be calculated from it.<br>
+The drift, or <span class="math inline">\(\mu\)</span>, is the expected return of the log returns. This can be calculated by using the <strong><em>mean</em></strong> function. The volatility, or <span class="math inline">\(\sigma\)</span>, is the standard deviation of the log returns. This can be calculated by using the <strong><em>sd</em></strong> function.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>drift <span class="ot">&lt;-</span> <span class="fu">mean</span>(MCD_daily_logreturns<span class="sc">$</span>Close)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>volatility <span class="ot">&lt;-</span> <span class="fu">sd</span>(MCD_daily_logreturns<span class="sc">$</span>Close)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>The drift or expected return of the historical returns is:  0.0004126382 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The volatility or the standard deviation of the historical returns is:  0.01430238 </code></pre>
+</div>
+</div>
+<p>The last variable that is needed is the initial price, <span class="math inline">\(S_0\)</span>. To predict future stocks, the last closing price will be used for the initial price.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>S0 <span class="ot">&lt;-</span> <span class="fu">tail</span>(MCD_closing<span class="sc">$</span>Close, <span class="at">n =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>The initial price taken from the last closing price is: USD$ 315 </code></pre>
+</div>
+</div>
+<p>Now the geometric Brownian motion model can be developed in full. Setting the seed to 123456 so that this implementation can be replicated.</p>
+<p><span class="math inline">\(\ T\)</span> is the time period in years, which can be any amount of time that the stocks will be extrapolated to.</p>
+<p><span class="math inline">\(\ n\)</span> is the number of time steps that the stock price will take in <span class="math inline">\(\ T\)</span> amount of years.</p>
+<p><span class="math inline">\(\ t\)</span> is the full set of time steps from 0 to <span class="math inline">\(T\)</span>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123456</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">#set parameters</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>S0 <span class="ot">&lt;-</span> <span class="fu">tail</span>(MCD_closing<span class="sc">$</span>Close, <span class="at">n =</span> <span class="dv">1</span>) </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>drift <span class="ot">&lt;-</span> <span class="fu">mean</span>(MCD_daily_logreturns<span class="sc">$</span>Close)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>volatility <span class="ot">&lt;-</span> <span class="fu">sd</span>(MCD_daily_logreturns<span class="sc">$</span>Close)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>T <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="co">#time period in years</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">3500</span> <span class="co">#number of timesteps in years</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">&lt;-</span> T <span class="sc">/</span> n </span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, T, <span class="at">length.out =</span> n <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a><span class="co">#Simulating the standard Weiner process to add the stochastic nature</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>W <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">cumsum</span>(<span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fu">sqrt</span>(dt))))</span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="co">#simulate the geometric Brownian motion</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> S0 <span class="sc">*</span> <span class="fu">exp</span>((drift <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> volatility<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> t <span class="sc">+</span> volatility <span class="sc">*</span> W)</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(t, S, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"deepskyblue3"</span>,</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Time in years (t)"</span>, <span class="at">ylab =</span> <span class="st">"Stock Price S(t) ($)"</span>,</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Prediction of McDonald's Stock Price from 2026 to 2036"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption>A prediction of future McDonald’s Closing Stock Prices.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The Weiner Process is added to to the process to add the stochastic nature. It is made from creating a random normal probability distribution, <span class="math inline">\(n\)</span> number of times, with the mean ( <span class="math inline">\(\mu\)</span> ) being 0 and the standard deviation ( <span class="math inline">\(\sigma\)</span>) being the square root of the time period divided by the number of time steps.</p>
+<p>This single simulation appears to imitate the way stock prices move over time, with the start of the movement from the initial price of USD$315. It slowly trends upwards due to the positive drift and the ending price after 10 years and 3500 time steps is around $327 and had many random fluctuations due to the volatility.</p>
+<p>Now that the model has been created and fully defined, trails can be run against it in a Monte Carlo Simulation.</p>
+</section>
+<section id="monte-carlo-simulation-with-gbm" class="level2">
+<h2 class="anchored" data-anchor-id="monte-carlo-simulation-with-gbm">Monte Carlo Simulation with GBM</h2>
+<p>Monte Carlo simulation can now be run with the geometric Brownian motion model as the base. Repeatedly running the GBM model and storing the results of the stochastic model into a matrix, then plotting each result in a single plot. This code was heavily taken from Longmore (2020)’s website article on “Efficiently Simulating Geometric Brownian Motion in R.” It has been slightly edited to include the model that has already been created.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234567</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>simGBM <span class="ot">&lt;-</span> <span class="cf">function</span>(nsim, T, n, drift, volatility, S0){</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  dt <span class="ot">=</span> T <span class="sc">/</span> n</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="co">#create a matrix for the stored GBM simulations</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  gbm <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="at">ncol =</span> nsim, <span class="at">nrow =</span> n)</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (sim <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nsim) {</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">#initialise the row 1, column 1 as the initial price</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    gbm[<span class="dv">1</span>, sim] <span class="ot">&lt;-</span> S0 </span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="co">#nested for loop</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> (day <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>n) {</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>      <span class="co">#standard Weiner Process</span></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>      W <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fu">sqrt</span>(dt))</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>      <span class="co">#Geometric Brownian motion process</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>      gbm[day, sim] <span class="ot">&lt;-</span> gbm[(day <span class="sc">-</span> <span class="dv">1</span>), sim] <span class="sc">*</span> </span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">exp</span>((drift <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> volatility<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> dt <span class="sc">+</span> volatility <span class="sc">*</span> W)</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(gbm)</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>This is a walk-through of the steps taken for the Monte Carlo simulation with geometric Brownian motion.</p>
+<p>The seed has been set to “1234567” to be able to reproduce the results accurately.</p>
+<ol type="1">
+<li>A function <em>simGBM</em> has been created to have the following variables to be input:
+<ul>
+<li><p><span class="math inline">\(nsim\)</span>: number of simulations</p></li>
+<li><p><span class="math inline">\(T\)</span>: the number of years</p></li>
+<li><p><span class="math inline">\(n\)</span>: the amount of time steps in the given amount of years</p></li>
+<li><p><span class="math inline">\(drift\)</span> or <span class="math inline">\(\mu\)</span>: the expected return of the historical data</p></li>
+<li><p><span class="math inline">\(volatility\)</span> or <span class="math inline">\(\sigma\)</span>: the standard deviation of the historical data</p></li>
+<li><p><span class="math inline">\(S_0\)</span>: initial price</p></li>
+</ul></li>
+<li>A matrix: <em>gbm</em> is created with the number of columns being the number of simulations, and the rows being the number of time steps in the given amount of years</li>
+<li>A for loop is repeating the next steps for the length of <span class="math inline">\(nsim\)</span>.
+<ol type="1">
+<li><span class="math inline">\(gbm\)</span> matrix is initialised at [1,1] with the initial price <span class="math inline">\(S_0\)</span></li>
+<li>A nested for loop begins starting at 2, and looping until all of the time steps are done
+<ol type="1">
+<li>The standard Weiner process is produced, using a random normal distribution</li>
+<li>the GBM process’ results are input into the <span class="math inline">\(gbm\)</span> matrix</li>
+</ol></li>
+</ol></li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234567</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>nsim <span class="ot">&lt;-</span> <span class="dv">70</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>T <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">1500</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>drift <span class="ot">&lt;-</span> <span class="fu">mean</span>(MCD_daily_logreturns<span class="sc">$</span>Close)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>volatility <span class="ot">&lt;-</span> <span class="fu">sd</span>(MCD_daily_logreturns<span class="sc">$</span>Close)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>S0 <span class="ot">&lt;-</span> <span class="dv">315</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>gbm <span class="ot">&lt;-</span> <span class="fu">simGBM</span>(nsim, T, n, drift, volatility, S0)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>gbm_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(gbm) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">ix =</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(gbm)) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>ix, <span class="at">names_to =</span> <span class="st">'sim'</span>, <span class="at">values_to =</span> <span class="st">'Price'</span>)</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>gbm_df <span class="sc">%&gt;%</span> </span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ix, <span class="at">y =</span> Price, <span class="at">color =</span> sim)) <span class="sc">+</span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Monte Carlo simulation with GBM model of McDonald's closing price ($)"</span>) <span class="sc">+</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">'none'</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The data frame that was created from the <em>simGBM</em> can be piped into the <strong><em>ggplot</em></strong> function, which can make code easier to understand.</p>
+<p>Using <strong><em>ggplot</em></strong> to aid in construction the plots of all of the simulated GBM processes which has been put into a data frame: <em>gbm_df.</em> The plotted lines represent each individual simulation of the created GBM model. The stochastic nature of the Weiner process allows so many different outcomes of geometric Brownian motion and can be seen easier in this visualisation.</p>
+<p>This function can also be plotted to view the distribution of the predicted prices. From his distribution, the value-at-risk can be calculated. The distribution of simulated GBM stocks are log-normally distributed.</p>
+</section>
+<section id="validation-of-the-model" class="level2">
+<h2 class="anchored" data-anchor-id="validation-of-the-model">Validation of the Model</h2>
+<p>After both the geometric Brownian motion Model and the Monte Carlo simulation model are completed, validation must be performed to interpret results and ensure that the models created are accurate or efficient.</p>
+<section id="value-at-risk-var" class="level3">
+<h3 class="anchored" data-anchor-id="value-at-risk-var">Value-at-Risk (VaR)</h3>
+<p>A larger amount of simulations should be run for validations, to ensure that the results can be as accurate as possible. Choosing an arbitrary time for the stocks to be predicted. One year with 300 days that the stock will be able to be traded in the year (time steps). The distribution graph will show the simulated price after one year (300 time steps) and 10,000 simulations.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234567</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>nsim <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>T <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">300</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>drift <span class="ot">&lt;-</span> <span class="fu">mean</span>(MCD_daily_logreturns<span class="sc">$</span>Close)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>volatility <span class="ot">&lt;-</span> <span class="fu">sd</span>(MCD_daily_logreturns<span class="sc">$</span>Close)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>S0 <span class="ot">&lt;-</span> <span class="dv">315</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>VAR_gbm <span class="ot">&lt;-</span> <span class="fu">simGBM</span>(nsim, T, n, drift, volatility, S0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>After the results have been produced, they can be plot as a histogram so view how the results have been distributed.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">price =</span> VAR_gbm[n, ]) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> price)) <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">binwidth =</span> <span class="fl">0.1</span>)<span class="sc">+</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Simulated Closing Price after 300 days"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The histogram appears to be slightly skewed to the left. This skew will only get more aggressive with a higher number of simulations.</p>
+<p>The closing price after 300 days will be sorted in ascending order to find the value-at-risk at a 95% confidence interval (Dixon, 2022).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sorted_VaR <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">price =</span> VAR_gbm[n, ]) <span class="sc">%&gt;%</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(price)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(sorted_VaR)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     price
+1 298.2111
+2 299.7338
+3 300.2392
+4 300.6184
+5 300.6987
+6 300.7820</code></pre>
+</div>
+</div>
+<p>Now that the last closing price has been sorted into ascending order, the <strong><em>quantile</em></strong> function can be utilised to find the value at 5% out of 10,000 simulations.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>VaR5 <span class="ot">&lt;-</span> <span class="fu">quantile</span>(sorted_VaR<span class="sc">$</span>price, <span class="dv">1</span><span class="fl">-0.95</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>The value at risk at the 95% confidence level is: $ 307.91 </code></pre>
+</div>
+</div>
+<p>Because the starting price was USD$315, and the value at a 95% confidence level is USD$307.91, the potential loss on each share bought of McDonald’s can be calculated.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>VaR_Loss <span class="ot">&lt;-</span> <span class="dv">315</span><span class="sc">-</span> VaR5</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>The potential loss on each McDonald's share after one year is: $ 7.09 </code></pre>
+</div>
+</div>
+</section>
+<section id="historical-vs-simulated-data" class="level3">
+<h3 class="anchored" data-anchor-id="historical-vs-simulated-data">Historical vs Simulated data</h3>
+<p>One way of validating the stochastic model is to put it against the original stock data. This is a direct comparison to see if the model can imitate the historical data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123456</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="co">#set parameters</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>S0 <span class="ot">&lt;-</span> <span class="fl">21.05</span> <span class="co">#Using the same starting price as the historical stocks at 03/01/2000</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>drift <span class="ot">&lt;-</span> <span class="fu">mean</span>(MCD_daily_logreturns<span class="sc">$</span>Close)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>volatility <span class="ot">&lt;-</span> <span class="fu">sd</span>(MCD_daily_logreturns<span class="sc">$</span>Close)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>T <span class="ot">&lt;-</span> <span class="dv">26</span> <span class="co">#The year ending in 2026</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">6559</span> <span class="co">#The amount of time steps during 2000 and 2026</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>dt <span class="ot">&lt;-</span> T <span class="sc">/</span> n</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>t <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, T, <span class="at">length.out =</span> n <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="co">#Simulating the standard Weiner process to add to the Brownian Motion</span></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>W <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">cumsum</span>(<span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fu">sqrt</span>(dt))))</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="co">#simulate the geometric Brownian motion</span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> S0 <span class="sc">*</span> <span class="fu">exp</span>((drift <span class="sc">-</span> <span class="fl">0.5</span> <span class="sc">*</span> volatility<span class="sc">^</span><span class="dv">2</span>) <span class="sc">*</span> t <span class="sc">+</span> volatility <span class="sc">*</span> W)</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(t, S, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"red"</span>,</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Time in years (t)"</span>, <span class="at">ylab =</span> <span class="st">"Stock Price S(t) ($)"</span>,</span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Imitation of McDonald's </span><span class="sc">\n</span><span class="st"> Stock Price from 2000 to 2026"</span>)</span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="at">x =</span> MCD_closing<span class="sc">$</span>Date, <span class="at">y =</span> MCD_closing<span class="sc">$</span>Close, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">col =</span> <span class="st">"blue4"</span>,</span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Date"</span>, <span class="at">ylab =</span> <span class="st">"Closing price ($)"</span>, <span class="at">main =</span> <span class="st">"Closing Price ($) of McDonald's</span><span class="sc">\n</span><span class="st"> Stock from 2000 to 2026"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>Looking back at the side-by-side historical vs simulated graphs in the validation, even though the graphs look relatively similar in angle, the scale is completely different. From the graph on the left in red, the <em>Imitation of McDonald’s Stock Price from 2000 to 2026,</em> the scale goes from $21 to $23. This is completely different from the historical stock graph in blue, which goes from 0 to over $300. From the comparison of the scale of the graphs alone, it can be seen that the simulation is not an accurate imitation of the historical data. This happens because of the real world effects on historical stocks. Inflation is a key affector on stock prices. There is no obvious linear relationship between inflation and stock prices, but stocks tend to perform better during periods of higher inflation (Zucchi, 2024). The historical stocks have performed a lot better than the simulated stocks and follows a much different trending line. This can be a testament to how accurate the simulation model is when trying to predict future stocks.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
